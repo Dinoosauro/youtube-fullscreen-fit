@@ -1,0 +1,67 @@
+:root {
+    --background: #151515;
+    --subsection: #303030;
+    --color: #fafafa;
+}
+body {
+    background-color: var(--background);
+    color: var(--color);
+    width: 200px;
+    padding: 15px;
+    padding-top: 5px;
+    font-family: "Work Sans", sans-serif;
+    font-size: 1em;
+}
+.flex {
+    display: flex;
+}
+.flex > input {
+    margin-right: 10px;
+}
+.subsection {
+    background-color: var(--subsection);
+    padding: 10px;
+    padding-top: 5px;
+    padding-bottom: 15px;
+    border-radius: 16px;
+}
+.subsection > h3 {
+    text-align: center;
+}
+a {
+    color: #fafafa;
+}
+.title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+input[type="checkbox"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: var(--background);
+    margin: 5px;
+    min-width: 20px;
+    min-height: 20px;
+    max-width: 20px;
+    max-height: 20px;
+    border: 2px solid #9e281e;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  input[type="checkbox"]:checked {
+    background-color: #9e281e;
+  }
+  input[type="checkbox"]:checked:after {
+    content: '';
+    position: absolute;
+    left: 10%;
+    top: 10%;
+    width: 80%;
+    height: 80%;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M20.285 6.289a1 1 0 0 0-1.414 0l-11.36 11.36-4.95-4.95a1 1 0 1 0-1.414 1.414l5.657 5.657a1 1 0 0 0 1.414 0l12.067-12.067a1 1 0 0 0 0-1.414z"/></svg>') no-repeat center center;
+    background-size: contain;
+  }

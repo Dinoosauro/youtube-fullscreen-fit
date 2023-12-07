@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Fullscreen Fit",
+  "description": "Make the YouTube player fit all of your screen when opening fullscreen mode",
+  "version": "1.0",
+  "action": {
+    "default_popup": "./ui/ui.html"
+  },
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "js": [
+        "script.js"
+      ],
+      "matches": [
+        "https://*.youtube.com/*"
+      ]
+    }
+  ],
+  "icons": {
+    "16": "./ui/assets/icon-16.png",
+    "48": "./ui/assets/icon-48.png",
+    "128": "./ui/assets/icon-128.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "dinoosauro-firefox-extension@googlegroups.com"
+    }
+  }
+}
