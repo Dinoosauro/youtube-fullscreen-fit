@@ -6,7 +6,7 @@
 body {
     background-color: var(--background);
     color: var(--color);
-    width: 200px;
+    width: 350px;
     padding: 15px;
     padding-top: 5px;
     font-family: "Work Sans", sans-serif;
@@ -14,6 +14,7 @@ body {
 }
 .flex {
     display: flex;
+    align-items: center;
 }
 .flex > input {
     margin-right: 10px;
@@ -31,11 +32,12 @@ body {
 a {
     color: #fafafa;
 }
-.title {
+.title > div {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 input[type="checkbox"] {
     -webkit-appearance: none;
@@ -64,4 +66,9 @@ input[type="checkbox"] {
     height: 80%;
     background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M20.285 6.289a1 1 0 0 0-1.414 0l-11.36 11.36-4.95-4.95a1 1 0 1 0-1.414 1.414l5.657 5.657a1 1 0 0 0 1.414 0l12.067-12.067a1 1 0 0 0 0-1.414z"/></svg>') no-repeat center center;
     background-size: contain;
+  }
+  .center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
