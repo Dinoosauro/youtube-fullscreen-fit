@@ -13,6 +13,8 @@ Go to the ```chrome://extensions``` page, and enable the ```Developer mode``` sl
 ### Firefox
 Go to ```about:debugging#/runtime/this-firefox```, and click on the ```Load Temporary Add-on``` button. Choose the .zip file, and the extension will be installed. Now, go to the YouTube webpage. Click on the extension icon on the top bar, right click on ```YouTube Fullscreen Fit``` and choose ```Always enabled for youtube.com```. 
 
+Also available for Firefox here: https://addons.mozilla.org/firefox/addon/youtube-fullscreen-fit/
+
 ## Usage
 After the extension has been installed (and the permission to access YouTube has been granted), videos in full screen mode will automatically be resized to fit all the screen. You'll find a button to make the video back to its original size (or to enlarge it in the opposite case) at the bottom of the player UI (at the left of the subtitle icon).
 
