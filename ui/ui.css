@@ -7,7 +7,6 @@
 body {
     background-color: var(--background);
     color: var(--color);
-    width: 350px;
     padding: 15px;
     padding-top: 5px;
     font-family: "Work Sans", sans-serif;
