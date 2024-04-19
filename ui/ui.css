@@ -72,9 +72,7 @@ input[type="checkbox"] {
     align-items: center;
     justify-content: center;
   }
-  button {
-    -webkit-appearance: none;
-    appearance: none;
+  select, button {
     border-radius: 8px;
     color: var(--color);
     background-color: var(--subsection);
@@ -84,8 +82,12 @@ input[type="checkbox"] {
     width: -webkit-fill-available;
     transition: filter 0.15s ease-in-out;
     border: 1px solid var(--color);
+    font-family: 'Work Sans', sans-serif;
   }
   button:hover {
     cursor: pointer;
     filter: brightness(150%);
+  }
+  select {
+    padding-left: 10px;
   }

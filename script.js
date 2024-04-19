@@ -47,6 +47,7 @@ let needsToBeApplied = {
     default: true, // If the extension should fill the video automatically
     force: false, // If the user has requested to fill the video
     fillStyle: "cover", // The style the video should be filled. Can be "cover" (scale it) or "fill" (stretch it)
+    keepHeight: false // Video will be stretched only if, by default, the video wouldn't fully occupy the webpage in its height
 };
 function removeItem(selector) { // Checks if the provided selector (and its hover element) exists, and, if true, removes it from the DOM.
     if ((document.querySelector(`[${selector}]`) ?? "") !== "") document.querySelector(`[${selector}]`).remove();
@@ -93,14 +94,15 @@ function main() {
     function readLocalVal(val) { // Read the value of the local storage for extension.
         needsToBeApplied.default = val.AutoApply !== "0";
         needsToBeApplied.fillStyle = val.IsStretched !== "0" ? "cover" : "fill";
+        needsToBeApplied.keepHeight = val.HeightFill === "1"
     }
     function reSyncSettings() { // Get settings from the local storage for extension
-        (chrome ?? "") !== "" ? chrome.storage.sync.get(["AutoApply", "IsStretched"], (val) => readLocalVal(val)) : browser.storage.sync.get(["AutoApply", "IsStretched"], (val) => readLocalVal(val));
+        (chrome ?? "") !== "" ? chrome.storage.sync.get(["AutoApply", "IsStretched", "HeightFill"], (val) => readLocalVal(val)) : browser.storage.sync.get(["AutoApply", "IsStretched", "HeightFill"], (val) => readLocalVal(val));
     }
     reSyncSettings();
     let observer = new MutationObserver(() => { // Observe for mutations in the classes of the "movie_player" div. When full screen, this item obtains the "ytp-fullscreen" class.
         if (document.getElementById("movie_player").classList.contains("ytp-fullscreen")) { // Fullscreen
-            if (needsToBeApplied.default || needsToBeApplied.force) applyItem(); else if ((document.querySelector("[data-ytfullscreenfitresize]") ?? "") === "") (document.querySelector(".ytp-right-controls") ?? buttons.mobileFix).prepend(buttons.resize); // If it needs to be applied, do it. Otherwise, show the button to enlarge the video.
+            if ((needsToBeApplied.default && (!needsToBeApplied.keepHeight || (document.querySelector(".html5-video-container").querySelector("video").videoWidth / document.querySelector(".html5-video-container").querySelector("video").videoHeight) > (window.innerWidth / window.innerHeight))) || needsToBeApplied.force) applyItem(); else if ((document.querySelector("[data-ytfullscreenfitresize]") ?? "") === "") (document.querySelector(".ytp-right-controls") ?? buttons.mobileFix).prepend(buttons.resize); // If it needs to be applied, do it. Otherwise, show the button to enlarge the video.
         } else { // Probably not fullscreen
             if ((document.fullscreenElement ?? "") === "") { // No fullscreen element found
                 needsToBeApplied.force = false; // Avoid filling the video again
@@ -114,7 +116,7 @@ function main() {
         ((document.getElementById("movie_player") ?? "") === "") ? setTimeout(() => { startMoviePlayer(); }, 500) : observer.observe(document.getElementById("movie_player"), { attributes: true }) // Start observing the movie_player if the "movie_player" element has appeared
     }
     setInterval(() => {
-        if ((document.getElementById("movie_player") ?? "") !== "" && document.getElementById("movie_player").classList.contains("ytp-fullscreen") && (document.querySelector("[data-ytfullscreenresizegeneral]") ?? "") === "") startMoviePlayer();
+        ((document.getElementById("movie_player") ?? "") !== "" && document.getElementById("movie_player").classList.contains("ytp-fullscreen") && (document.querySelector("[data-ytfullscreenresizegeneral]") ?? "") === "") && startMoviePlayer();
     }, 500)
     startMoviePlayer(); // Wait until the movie_player id is found
     function checkMobile() {
@@ -139,17 +141,14 @@ function main() {
     checkMobile();
 }
 function mainCheck() {
-    console.log("Checking....");
-    if ((document.querySelector(".html5-video-player") ?? "") !== "") main(); else {
-        setTimeout(() => { mainCheck() }, 500);
-    }
+    ((document.querySelector(".html5-video-player") ?? "") !== "") ? main() : setTimeout(() => { mainCheck() }, 500);
 }
 mainCheck();
 let oldWeb = window.location.href; // Store the first URL
 setInterval(() => { // Check if the URL has changed
     if (oldWeb !== window.location.href) {// Disconnect every observer, remove every button and recreate all the events
-        for (let item of observerArr) item.disconnect(); 
-        buttons.mobileFix.style.display = "none"; 
+        for (let item of observerArr) item.disconnect();
+        buttons.mobileFix.style.display = "none";
         for (let item of ["data-ytfullscreenfitresize", "data-ytfullscreenfitexit", "data-ytfullscreenresizegeneral"]) removeItem(item);
         oldWeb = window.location.href;
         mainCheck();
