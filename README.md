@@ -20,5 +20,7 @@ After the extension has been installed (and the permission to access YouTube has
 
 If you want to enable manually the zoom, you can do that by clicking on the extension icon and by disabling the "Automatically enable extension" checkbox. You can also choose to strecth the video instead of zooming it (idk why you should want to do that, but it's possible).
 
-<img width="407" alt="immagine" src="https://github.com/Dinoosauro/youtube-fullscreen-fit/assets/80783030/e35998d3-8e27-4227-b350-68323c0ce2b1">
+You can also choose to automatically scale the video only if the screen height isn't completely covered. This means that the video will be filled only if there are black bars at the top/bottom of the screen. It might be useful to enable this if you listen to music using YouTube's auto generated videos.
+
+<img width="721" alt="immagine" src="https://github.com/Dinoosauro/youtube-fullscreen-fit/assets/80783030/bf98bc91-2cce-45d1-8bc3-8ed581329f0e">
 
