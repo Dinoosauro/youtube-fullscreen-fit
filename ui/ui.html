@@ -21,18 +21,24 @@
     <div class="subsection">
         <h3>Settings:</h3>
         <div class="flex">
-            <input type="checkbox" id="autoCover" checked data-defcheck="a"><label for="autoCover">Automatically enable
+            <input type="checkbox" id="autoCover" checked checked><label for="autoCover">Automatically enable
                 extension</label>
         </div><br>
         <div class="flex">
-            <input type="checkbox" id="stretch" checked data-defcheck="a"><label for="stretch">Adapt content to the
+            <input type="checkbox" id="stretch" checked checked><label for="stretch">Adapt content to the
                 screen
                 content instead
                 of stretching it</label><br><br>
         </div><br>
         <div class="flex">
-            <input type="checkbox" id="fillHeight"><label for="fillHeight">Adapt content to the screen only if the
-                video height doesn't completely cover the screen</label>
+            <select id="fillHeight">
+                <option value="0">Always adapt content to the screen</option>
+                <option value="1">Adapt content to the screen only if the
+                    video height doesn't completely cover the screen</option>
+                <option value="2">Adapt content to the screen only if the
+                    video width doesn't completely cover the screen</option>
+
+            </select>
         </div>
     </div><br>
     <div class="subsection">
