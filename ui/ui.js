@@ -11,9 +11,25 @@ function setItem(key, value) {
 }
 document.getElementById("fillHeight").onchange = () => {
     setItem("HeightFill", document.getElementById("fillHeight").value);
-    console.log("Setting!");
+    updateFillHeightDesc();
 };
-(typeof chrome !== "undefined" ? chrome : browser).storage.sync.get(["HeightFill"]).then((res) => { document.getElementById("fillHeight").value = res["HeightFill"] ?? "0" });
+function updateFillHeightDesc() {
+    switch (document.getElementById("fillHeight").value) {
+        case "0":
+            document.getElementById("fillHeightMeaning").textContent = "";
+            document.getElementById("fillHeightMeaning").style.display = "none";
+            break;
+        case "1":
+            document.getElementById("fillHeightMeaning").textContent = "The video will be scaled only if there are black bars at the top/bottom of the screen. If the video fills the height of the screen, it won't be scaled. This can be helpful if you listen to music videos, and you want to continue seeing the album art of the music you're listening to.";
+            document.getElementById("fillHeightMeaning").style.display = "block";
+            break;
+        case "2":
+            document.getElementById("fillHeightMeaning").textContent = "The video will be scaled only if there are black bars at the left/right of the screen. If the video fills the width of the screen, it won't be scaled.";
+            document.getElementById("fillHeightMeaning").style.display = "block";
+            break;
+    }
+}
+(typeof chrome !== "undefined" ? chrome : browser).storage.sync.get(["HeightFill"]).then((res) => { document.getElementById("fillHeight").value = res["HeightFill"] ?? "0"; updateFillHeightDesc() });
 
 document.getElementById("grantAccess").onclick = () => { // Request the access to the YouTube webpage
     typeof chrome !== "undefined" ? chrome.permissions.request({ origins: ["https://*.youtube.com/*"] }, (() => checkPermission())) : browser.permissions.request({ origins: ["https://*.youtube.com/*"] }).then(() => checkPermission());
