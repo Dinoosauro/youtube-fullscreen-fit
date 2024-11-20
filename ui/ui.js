@@ -1,6 +1,38 @@
+
+document.getElementById("toggleShortcut").addEventListener("click", () => {
+    document.getElementById("toggleShortcut").textContent = "";
+    /**
+     * The array that contains all the pressed keys, in lowercase
+     */
+    const combination = [];
+    /**
+     * The event listener that'll be triggered when the user presses a key
+     * @param {KeyboardEvent} e the Event
+     */
+    const event = (e) => {
+        e.preventDefault();
+        if (combination.indexOf(e.key.toLowerCase()) !== -1) return; // Avoid adding multiple times the same key
+        combination.push(e.key.toLowerCase());
+        document.getElementById("toggleShortcut").textContent += ` ${e.key.toLowerCase()}`;
+    }
+    window.addEventListener("keydown", event);
+    window.addEventListener("keyup", () => {
+        window.removeEventListener("keydown", event); // Remove the previous event listener since it's no longer needed
+        setItem("ToggleExtensionCmd", combination); // Save the new combination
+        (typeof chrome !== "undefined" ? chrome : browser).tabs.query({ active: true }).then((ids) => { // Send to the content script the new keyboard shortcut
+            (typeof chrome !== "undefined" ? chrome : browser).tabs.sendMessage(ids[0].id, { action: "updateKeyboardShortcut", content: combination });
+        })
+    })
+});
+
+(typeof chrome !== "undefined" ? chrome : browser).storage.sync.get(["ToggleExtensionCmd"]).then((res) => { // Update the keyboard shortcut for toggling the extension.
+    if (res.ToggleExtensionCmd) document.getElementById("toggleShortcut").textContent = res.ToggleExtensionCmd.join(" ");
+})
+
 let check = { // Key: checkbox ID, Value: the property to change in the storage
     "autoCover": "AutoApply",
     "stretch": "IsStretched",
+    "preventDefault": "PreventDefault"
 }
 for (let item in check) {
     document.getElementById(item).onchange = () => setItem(check[item], document.getElementById(item).checked ? "1" : "0"); // If checked, write 1 to the storage. Otherwise, write 0.
