@@ -2,11 +2,13 @@
   "manifest_version": 3,
   "name": "YouTube Fullscreen Fit",
   "description": "Make the YouTube player fit all of your screen when opening fullscreen mode",
-  "version": "1.4.1",
+  "version": "1.5",
   "action": {
     "default_popup": "./ui/ui.html"
   },
-  "permissions": ["storage"],
+  "permissions": [
+    "storage"
+  ],
   "content_scripts": [
     {
       "js": [

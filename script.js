@@ -1,5 +1,8 @@
 let observerArr = [];
-function btnCreate({ attr, img, hover }) { // Create the button in the YouTube video player.
+/**
+ * Create the button for the YouTube video player
+ */
+function btnCreate({ attr, img, hover }) {
     // Button image
     let clickImg = document.createElement("img");
     clickImg.classList.add("ytp-button");
@@ -15,8 +18,11 @@ function btnCreate({ attr, img, hover }) { // Create the button in the YouTube v
     let hoverText = document.createElement("span");
     hoverText.textContent = hover;
     hoverText.style.fontSize = "1.8rem";
-    function fetchColor() { // Try to get YouTube's text color. Fallbacks to "red" if nothing is found.
-        function timeout() { // Retry after 500 seconds
+    /**
+     * Try to get YouTube's text color. Fallbacks to "red" if nothing is found.
+     */
+    function fetchColor() {
+        function timeout() { // Retry after 500 ms
             hoverText.style.color = "red";
             setTimeout(() => { fetchColor() }, 500);
         }
@@ -44,16 +50,43 @@ function btnCreate({ attr, img, hover }) { // Create the button in the YouTube v
     return clickImg;
 }
 let needsToBeApplied = {
-    default: true, // If the extension should fill the video automatically
-    force: false, // If the user has requested to fill the video
-    fillStyle: "cover", // The style the video should be filled. Can be "cover" (scale it) or "fill" (stretch it)
-    keepHeight: 0 // Video will be stretched only if, by default, the video wouldn't fully occupy the webpage in its height
+    /**
+     * If the extension should fill the video automatically
+     */
+    default: true,
+    /**
+     * If the user has requested to fill the video
+     */
+    force: false,
+    /**
+     * The style the video should be filled. Can be "cover" (scale it) or "fill" (stretch it)
+     */
+    fillStyle: "cover",
+    /**
+     * Video will be stretched only if, by default, the video wouldn't fully occupy the webpage in its height
+     */
+    keepHeight: 0,
+    /**
+     * The combination of keys to press to enable or disable fullscreen fit
+     */
+    toggleExtension: [],
+    /**
+     * Calls `e.preventDefault()` when the user presses a key on the webpage.
+     */
+    preventDefaultEvents: false
 };
-function removeItem(selector) { // Checks if the provided selector (and its hover element) exists, and, if true, removes it from the DOM.
+/**
+ * Checks if the provided selector (and its hover element) exists, and, if true, removes it from the DOM.
+ * @param {string} selector the data-element string
+ */
+function removeItem(selector) {
     if ((document.querySelector(`[${selector}]`) ?? "") !== "") document.querySelector(`[${selector}]`).remove();
     if ((document.querySelector(`[${selector}hover]`) ?? "") !== "") document.querySelector(`[${selector}hover]`).remove();
 }
-function applyItem() { // Update the YouTube video player
+/**
+ * Update the YouTube video player
+ */
+function applyItem() {
     let element = document.querySelector(".html5-video-container").querySelector("video"); // Get the video element
     removeItem("data-ytfullscreenfitresize");
     element.style.height = `100vh`;  // The player must fill the screen
@@ -62,8 +95,14 @@ function applyItem() { // Update the YouTube video player
     ["top", "left"].forEach(e => { element.style[e] = "0px" }); // Put it on the top of the page
     if ((document.querySelector("[data-ytfullscreenfitexit]") ?? "") === "") (document.querySelector(".ytp-right-controls") ?? buttons.mobileFix).prepend(buttons.exit); // If no "exit" button is on the DOM, add one, so that the user can return to the classic video view.
 }
-let buttons = { // The object that'll contain the buttons to adapt the video to screen size (or go back to normal view)
-    resize: (() => { // Fill the video
+/**
+ * The object that'll contain the buttons to adapt the video to screen size (or go back to normal view)
+ */
+let buttons = {
+    /**
+     * Fill the video
+     */
+    resize: (() => {
         let clickImg = btnCreate({ hover: "Fill the video to screen width and height", img: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="-4 -4 32 32"><path fill="#f0f0f0" d="M21.25 13a.75.75 0 0 1 .743.648l.007.102v5a3.25 3.25 0 0 1-3.065 3.245L18.75 22h-4.668c.537-.385.974-.9 1.265-1.499l3.403-.001a1.75 1.75 0 0 0 1.744-1.607l.006-.143v-5a.75.75 0 0 1 .75-.75Zm-9.5-4A3.25 3.25 0 0 1 15 12.25v6.5A3.25 3.25 0 0 1 11.75 22h-6.5A3.25 3.25 0 0 1 2 18.75v-6.5A3.25 3.25 0 0 1 5.25 9h6.5Zm-5.689 4.103a.5.5 0 0 0-.06.24v4.315a.5.5 0 0 0 .739.439l3.955-2.158a.5.5 0 0 0 0-.878L6.74 12.903a.5.5 0 0 0-.679.2ZM18.751 2a3.25 3.25 0 0 1 3.244 3.066L22 5.25v5a.75.75 0 0 1-1.493.102l-.007-.102v-5a1.75 1.75 0 0 0-1.606-1.744L18.75 3.5h-5a.75.75 0 0 1-.102-1.493L13.75 2h5Zm-8.5 0a.75.75 0 0 1 .1 1.493l-.1.007h-5a1.75 1.75 0 0 0-1.745 1.606L3.5 5.25v3.402c-.599.292-1.114.73-1.5 1.266V5.25a3.25 3.25 0 0 1 3.066-3.245L5.25 2h5Z"/></svg>`, attr: "data-ytfullscreenfitresize" });
         clickImg.onclick = () => { // Force to adapt the video
             needsToBeApplied.force = true;
@@ -71,7 +110,10 @@ let buttons = { // The object that'll contain the buttons to adapt the video to 
         }
         return clickImg;
     })(),
-    exit: (() => { // Go back to normal view
+    /**
+     * Go back to normal view
+     */
+    exit: (() => {
         let clickImg = btnCreate({ hover: "Make the video go back to previous screen and height", attr: "data-ytfullscreenfitexit", img: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="-4 -4 32 32"><path fill="#f0f0f0" d="M5.25 3A3.25 3.25 0 0 0 2 6.25v11.5A3.25 3.25 0 0 0 5.25 21h13.5A3.25 3.25 0 0 0 22 17.75V6.25A3.25 3.25 0 0 0 18.75 3H5.25ZM9 9.25a1 1 0 0 1 1.482-.876l5 2.75a1 1 0 0 1 0 1.753l-5 2.75A1 1 0 0 1 9 14.75v-5.5Z"/></svg>` });
         clickImg.onclick = () => {
             needsToBeApplied.force = false; // Avoid restoring the video as filled
@@ -91,13 +133,21 @@ let buttons = { // The object that'll contain the buttons to adapt the video to 
     })()
 }
 function main() {
-    function readLocalVal(val) { // Read the value of the local storage for extension.
+    /**
+     * Read the value of the local storage for extension.
+     */
+    function readLocalVal(val) {
         needsToBeApplied.default = val.AutoApply !== "0";
         needsToBeApplied.fillStyle = val.IsStretched !== "0" ? "cover" : "fill";
         needsToBeApplied.keepHeight = isNaN(+val.HeightFill) ? 0 : +val.HeightFill;
+        needsToBeApplied.toggleExtension = val.ToggleExtensionCmd ?? [];
+        needsToBeApplied.preventDefaultEvents = val.PreventDefault === "1";
     }
-    function reSyncSettings() { // Get settings from the local storage for extension
-        typeof chrome !== "undefined" ? chrome.storage.sync.get(["AutoApply", "IsStretched", "HeightFill"], (val) => readLocalVal(val)) : browser.storage.sync.get(["AutoApply", "IsStretched", "HeightFill"], (val) => readLocalVal(val));
+    /**
+     * Get settings from the local storage for extension
+     */
+    function reSyncSettings() {
+        typeof chrome !== "undefined" ? chrome.storage.sync.get(["AutoApply", "IsStretched", "HeightFill", "ToggleExtensionCmd", "PreventDefault"], (val) => readLocalVal(val)) : browser.storage.sync.get(["AutoApply", "IsStretched", "HeightFill", "ToggleExtensionCmd", "PreventDefault"], (val) => readLocalVal(val));
     }
     reSyncSettings();
     let observer = new MutationObserver(() => { // Observe for mutations in the classes of the "movie_player" div. When full screen, this item obtains the "ytp-fullscreen" class.
@@ -143,6 +193,28 @@ function main() {
         }
     }
     checkMobile();
+
+
+    /**
+     * An array that contains all the pressed keys in lowercase
+     */
+    let clickedElements = [];
+    window.addEventListener("keydown", (e) => { // Add the key to the array and check if it's valid
+        needsToBeApplied.preventDefaultEvents && e.preventDefault();
+        clickedElements.push(e.key.toLowerCase());
+        if (!document.fullscreenElement) return;
+        needsToBeApplied.toggleExtension.length > 0 && needsToBeApplied.toggleExtension.every(key => clickedElements.indexOf(key) !== -1) && document.querySelector("[data-ytfullscreenfitresize], [data-ytfullscreenfitexit]").click();
+    });
+    window.addEventListener("keyup", () => { // Delete everything
+        clickedElements = [];
+    });
+    (typeof chrome === "undefined" ? browser : chrome).runtime.onMessage.addListener((message) => { // Receive from the UI when the shortcut is changed
+        switch (message.action) {
+            case "updateKeyboardShortcut": // Update keyboard shortcut to toggle the extension
+                needsToBeApplied.toggleExtension = message.content;
+                break;
+        }
+    });
 }
 function mainCheck() {
     ((document.querySelector(".html5-video-player") ?? "") !== "") ? main() : setTimeout(() => { mainCheck() }, 500);
@@ -158,3 +230,4 @@ setInterval(() => { // Check if the URL has changed
         mainCheck();
     }
 }, 450)
+
