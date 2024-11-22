@@ -1,3 +1,48 @@
+/**
+ * An array that contains all the pressed keys in lowercase
+ */
+let clickedElements = [];
+
+/**
+ * An Object that contains some functions that are called from event listeners
+ */
+const eventsContainer = {
+    /**
+     * Add the key to the array and check if it's valid
+     * The event that should be triggered for the "keydown" keyboard event
+     * @param {KeyboardEvent} e 
+     */
+    keydown: (e) => {
+        needsToBeApplied.preventDefaultEvents && e.preventDefault();
+        clickedElements.push(e.key.toLowerCase());
+        if (!document.fullscreenElement) return;
+        needsToBeApplied.toggleExtension.length > 0 && needsToBeApplied.toggleExtension.every(key => clickedElements.indexOf(key) !== -1) && document.querySelector("[data-ytfullscreenfitresize], [data-ytfullscreenfitexit]").click();
+    },
+    /**
+     * Delete everything
+     * The event that should be triggered for the "keyup" keyboard event
+     * @param {KeyboardEvent} e 
+     */
+    keyup: (e) => {
+        clickedElements = [];
+    },
+    /**
+     * Receive a message from the extension UI
+     * @param {any} message the Object received from the UI, composed by {content: any, action: string}
+     */
+    onMessage: (message) => {
+        switch (message.action) {
+            case "updateKeyboardShortcut": // Update keyboard shortcut to toggle the extension
+                needsToBeApplied.toggleExtension = message.content;
+                break;
+        }
+
+    }
+}
+
+/**
+ * The array that contains all the MutationObserver that are currently running
+ */
 let observerArr = [];
 /**
  * Create the button for the YouTube video player
@@ -194,27 +239,19 @@ function main() {
     }
     checkMobile();
 
+    // Now, we'll set up keyboard listeners, to make sure that the toggle shortcut can work.
 
-    /**
-     * An array that contains all the pressed keys in lowercase
-     */
-    let clickedElements = [];
-    window.addEventListener("keydown", (e) => { // Add the key to the array and check if it's valid
-        needsToBeApplied.preventDefaultEvents && e.preventDefault();
-        clickedElements.push(e.key.toLowerCase());
-        if (!document.fullscreenElement) return;
-        needsToBeApplied.toggleExtension.length > 0 && needsToBeApplied.toggleExtension.every(key => clickedElements.indexOf(key) !== -1) && document.querySelector("[data-ytfullscreenfitresize], [data-ytfullscreenfitexit]").click();
-    });
-    window.addEventListener("keyup", () => { // Delete everything
-        clickedElements = [];
-    });
-    (typeof chrome === "undefined" ? browser : chrome).runtime.onMessage.addListener((message) => { // Receive from the UI when the shortcut is changed
-        switch (message.action) {
-            case "updateKeyboardShortcut": // Update keyboard shortcut to toggle the extension
-                needsToBeApplied.toggleExtension = message.content;
-                break;
-        }
-    });
+    try { // We'll remove the event listeners, so that we avoid having the same function triggered multiple times when changing video from a playlist.
+        window.removeEventListener("keydown", eventsContainer.keydown);
+        window.removeEventListener("keyup", eventsContainer.keyup);
+        (typeof chrome === "undefined" ? browser : chrome).runtime.onMessage.removeListener(eventsContainer.onMessage);
+    } catch (ex) {
+        // Nothing
+    }
+
+    window.addEventListener("keydown", eventsContainer.keydown);
+    window.addEventListener("keyup", eventsContainer.keyup);
+    (typeof chrome === "undefined" ? browser : chrome).runtime.onMessage.addListener(eventsContainer.onMessage);
 }
 function mainCheck() {
     ((document.querySelector(".html5-video-player") ?? "") !== "") ? main() : setTimeout(() => { mainCheck() }, 500);
